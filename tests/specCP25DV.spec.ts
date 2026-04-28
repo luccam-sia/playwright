@@ -1,6 +1,6 @@
 import { test } from '@playwright/test';
 import { loginSession } from '../auth/login';
-import { CamaraPage } from '../pages/camaraPage.page';
+import { CamaraPage } from '../pages/camaraPage';
 
 test.describe('Modificar Tenant y Locación de cámara', () => {
     // Ejecución ANTES de cada test

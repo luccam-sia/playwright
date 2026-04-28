@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { loginSession } from '../auth/login';
-import { UsuarioOwnerPage } from '../pages/usuarioOwner.page';
-import { CreacionUsuarioPage } from '../pages/creacionUsuario.page';
+import { UsuarioOwnerPage } from '../pages/usuarioOwnerPage';
+import { CreacionUsuarioPage } from '../pages/creacionUsuarioPage';
 
 test.describe('Crear usuario Owner', () => {
   // Ejecución ANTES de cada test

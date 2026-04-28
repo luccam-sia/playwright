@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { loginSession } from '../auth/login';
-import { CreacionUsuarioPage } from '../pages/creacionUsuario.page';
+import { CreacionUsuarioPage } from '../pages/creacionUsuarioPage';
 
 test.describe('Crear usuario super Admin', () => {
   // Ejecución ANTES de cada test

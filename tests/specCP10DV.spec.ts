@@ -1,8 +1,8 @@
 import { test, expect } from '@playwright/test';
 import { loginSession } from '../auth/login';
-import { RolPage } from '../pages/rolPage.page';
-import { CreacionUsuarioPage } from '../pages/creacionUsuario.page';
-import { UsuarioUserPage } from '../pages/usuarioUser.page';
+import { RolPage } from '../pages/rolPage';
+import { CreacionUsuarioPage } from '../pages/creacionUsuarioPage';
+import { UsuarioUserPage } from '../pages/usuarioUserPage';
 
 test.describe('Creacion y asignacion de rol', () => {
   // Ejecución ANTES de cada test

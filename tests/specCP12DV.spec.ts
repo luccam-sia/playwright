@@ -1,6 +1,6 @@
 import { test } from '@playwright/test';
 import { loginSession } from '../auth/login';
-import { RolPage } from '../pages/rolPage.page';
+import { RolPage } from '../pages/rolPage';
 
 test.describe('Modificar rol', () => {
     // Ejecución ANTES de cada test
