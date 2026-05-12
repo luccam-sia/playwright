@@ -18,7 +18,7 @@ export class DevicesPage {
     readonly assignBtn: Locator;
     readonly tenantSearchInput: Locator;
     readonly locationSearchInput: Locator;
-    readonly matOption: (text: string) => Locator;
+    readonly matOption: (text: string, exact?: boolean) => Locator;
     readonly okBtn: Locator;
     readonly actionsBtn: Locator;
     readonly rebootOption: Locator;
@@ -57,7 +57,7 @@ export class DevicesPage {
 
         this.tenantSearchInput = page.locator('mat-dialog-container app-field-autocomplete-single-selection[name="tenant"] input');
         this.locationSearchInput = page.locator('mat-dialog-container app-field-autocomplete-single-selection[name="location"] input');
-        this.matOption = (text: string) => page.locator('mat-option', { hasText: text });
+        this.matOption = (text: string, exact: boolean = true) => page.getByRole('option', { name: text, exact });
 
         this.okBtn = page.locator('mat-dialog-actions button', { hasText: 'Ok' });
 
@@ -190,12 +190,12 @@ export class DevicesPage {
     /** Deshabilita el dispositivo (desde el detalle) */
     async disableDevice(): Promise<void> {
         await this.toggleBtn.click();
-        
+
         // El modal de confirmación puede tardar un instante en aparecer
         const modalOkBtn = this.page.locator('mat-dialog-container button', { hasText: 'Ok' });
         await modalOkBtn.waitFor({ state: 'visible', timeout: 5000 });
         await modalOkBtn.click();
-        
+
         await expect(this.statusIndicator).toContainText('Deshabilitado');
     }
 
@@ -208,7 +208,7 @@ export class DevicesPage {
     /** Realiza un ciclo de deshabilitar/habilitar adaptándose al estado actual */
     async executeToggleCycle(name: string): Promise<void> {
         await this.typeSearchInput(name);
-        
+
         // Esperamos que el indicador de estado sea visible
         await expect(this.statusIndicator).toBeVisible();
         const statusText = await this.statusIndicator.textContent();
@@ -217,7 +217,7 @@ export class DevicesPage {
             console.log('Detectado: Deshabilitado. Ejecutando ciclo: Habilitar -> Deshabilitar');
             await this.clickSelectDevice(name);
             await this.enableDevice();
-            
+
             // Re-ingresamos para deshabilitar (la app vuelve al listado tras habilitar/deshabilitar)
             await this.clickSelectDevice(name);
             await this.disableDevice();
@@ -225,7 +225,7 @@ export class DevicesPage {
             console.log('Detectado: Habilitado. Ejecutando ciclo: Deshabilitar -> Habilitar');
             await this.clickSelectDevice(name);
             await this.disableDevice();
-            
+
             // Re-ingresamos para habilitar
             await this.clickSelectDevice(name);
             await this.enableDevice();
@@ -236,7 +236,7 @@ export class DevicesPage {
     async updateDeviceVersion(version: string = '1.10.1'): Promise<void> {
         await this.clickSettingsTab();
         await this.versionSelect.click();
-        await this.page.locator('mat-option', { hasText: version }).click();
+        await this.matOption(version, false).click();
         await this.saveBtn.click();
         await expect(this.successActionTooltipModify).toBeVisible();
     }
@@ -245,7 +245,7 @@ export class DevicesPage {
     async downgradeDeviceVersion(version: string = '1.10.0'): Promise<void> {
         await this.clickSettingsTab();
         await this.versionSelect.click();
-        await this.page.locator('mat-option', { hasText: version }).click();
+        await this.matOption(version, false).click();
         await this.saveBtn.click();
         await expect(this.successActionTooltipModify).toBeVisible();
     }
@@ -267,25 +267,25 @@ export class DevicesPage {
 
         while (Date.now() - startTime < timeout) {
             console.log(`--- Reintentando verificación de versión (Tiempo: ${Math.round((Date.now() - startTime) / 1000)}s) ---`);
-            
+
             await this.page.reload();
             await this.page.waitForLoadState('load');
 
             await this.clickAssignTab();
             await this.typeSearchInput(name);
-            
+
             const currentVersion = await this.boxVersion.textContent();
             const cleanVersion = currentVersion?.trim();
             console.log(`Versión encontrada: ${cleanVersion} | Requerida: ${targetVersion}`);
-            
+
             if (cleanVersion === targetVersion) {
                 console.log("¡Versización actualizada!");
                 return;
             }
-            
+
             await this.page.waitForTimeout(interval);
         }
-        
+
         throw new Error(`Timeout: La versión de ${name} no cambió a ${targetVersion} tras 1 minuto.`);
     }
 
