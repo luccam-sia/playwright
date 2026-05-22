@@ -49,7 +49,7 @@ export class TenantPage {
         this.firstRow = page.locator('.mat-mdc-row').first();
 
         // Interruptor de encendido/apagado (toggle) del tenant
-        this.disableToggle = page.locator('#mat-mdc-slide-toggle-1-button');
+        this.disableToggle = page.locator('app-slide-toggle-status button[role="switch"]');
 
         // Botón de confirmación definitiva en la ventana modal/emergente
         this.confirmPopupBtn = page.locator('button.confirm-button');

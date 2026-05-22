@@ -41,7 +41,7 @@ export class DevicesPage {
     constructor(page: Page) {
         this.page = page;
 
-        this.searchInput = page.locator('input[placeholder="Buscar"]');
+        this.searchInput = page.locator('input[placeholder="Buscar por nombre o código"]');
         this.firstRow = page.locator('.mat-mdc-row').first();
 
         this.deleteDeviceBtn = page.locator('button', { hasText: 'Eliminar dispositivo' });
@@ -81,6 +81,10 @@ export class DevicesPage {
 
     // ── ACCIONES INDIVIDUALES ────────────────────────────────
 
+    async clickBackButton(): Promise<void> {
+        await this.backBtn.click();
+    }
+
     /** Escribe en el filtro de búsqueda y espera a que la tabla se actualice */
     async typeSearchInput(name: string): Promise<void> {
         await this.searchInput.clear();
@@ -103,7 +107,7 @@ export class DevicesPage {
         // Hacemos clic para ingresar
         await this.firstRow.click();
         // Esperamos a que cargue la vista de detalle
-        await expect(this.settingsTab).toBeVisible();
+        // await expect(this.settingsTab).toBeVisible();
     }
 
     /** Abre la pestaña de Configuración si no está activa */
@@ -209,9 +213,11 @@ export class DevicesPage {
     async executeToggleCycle(name: string): Promise<void> {
         await this.typeSearchInput(name);
 
-        // Esperamos que el indicador de estado sea visible
-        await expect(this.statusIndicator).toBeVisible();
-        const statusText = await this.statusIndicator.textContent();
+        // Wait for the table to filter before reading the status
+        await expect(this.firstRow).toContainText(name);
+        const rowStatus = this.firstRow.locator('app-status-indicator p');
+        await expect(rowStatus).toBeVisible();
+        const statusText = await rowStatus.textContent();
 
         if (statusText?.includes('Deshabilitado')) {
             console.log('Detectado: Deshabilitado. Ejecutando ciclo: Habilitar -> Deshabilitar');

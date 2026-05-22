@@ -32,6 +32,7 @@ test.describe('Gestión de Dispositivos - Baja y Alta', () => {
         await devicesPage.assignDevice('QA', 'Oficina SIA');
 
         // 5. Verificar que vuelve a aparecer en la lista de asignados
+        await devicesPage.clickBackButton();
         await devicesPage.clickAssignTab();
         await devicesPage.typeSearchInput('APC358825210055');
         // Si clickSelectDevice pasa, es que el dispositivo está ahí
